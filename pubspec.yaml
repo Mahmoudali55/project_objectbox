@@ -32,14 +32,14 @@ dependencies:
   faker: ^2.1.0
   flutter:
     sdk: flutter
+  objectbox: ^2.2.1
+  objectbox_flutter_libs: ^2.2.1
+ 
+  path_provider: ^2.1.1
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  build_runner: any
+  objectbox_generator: ^2.2.1
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
