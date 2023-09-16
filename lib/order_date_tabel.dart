@@ -1,10 +1,18 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:project_objectbox/entities.dart';
+import 'package:project_objectbox/objectbox.g.dart';
 
 class OrderDataTabel extends StatefulWidget {
+  final List<ShopOrder> orders;
   final void Function(int columnIndex, bool ascending) onSort;
-  const OrderDataTabel({super.key, required this.onSort});
+  final Store store;
+  const OrderDataTabel(
+      {super.key,
+      required this.onSort,
+      required this.store,
+      required this.orders});
 
   @override
   State<OrderDataTabel> createState() => _OrderDataTabelState();
@@ -13,30 +21,52 @@ class OrderDataTabel extends StatefulWidget {
 class _OrderDataTabelState extends State<OrderDataTabel> {
   bool _sortAscending = true;
   int _sortColumnIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
         child: DataTable(
-          sortColumnIndex: _sortColumnIndex,
-          sortAscending: _sortAscending,
-          columns: [
-            DataColumn(label: Text('Numder'), onSort: _onDataColumnSort),
-            DataColumn(label: Text('Customer')),
-            DataColumn(
-                label: Text('Price'), numeric: true, onSort: _onDataColumnSort),
-            DataColumn(label: Container()),
-          ],
-          rows: [
-            DataRow(cells: [
-              DataCell(Text('ID')),
-              DataCell(Text('CUSTOMER NAME'), onTap: () {}),
-              DataCell(Text('\$PRICE')),
-              DataCell(Icon(Icons.delete), onTap: () {}),
-            ])
-          ],
-        ),
+            sortColumnIndex: _sortColumnIndex,
+            sortAscending: _sortAscending,
+            columns: [
+              DataColumn(label: Text('Numder'), onSort: _onDataColumnSort),
+              DataColumn(label: Text('Customer')),
+              DataColumn(
+                  label: Text('Price'),
+                  numeric: true,
+                  onSort: _onDataColumnSort),
+              DataColumn(label: Container()),
+            ],
+            rows: widget.orders.map((order) {
+              return DataRow(cells: [
+                DataCell(Text(order.id.toString())),
+                DataCell(Text(order.customer.target?.name ?? 'NONE'),
+                    onTap: () {
+                  showBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Material(
+                          child: ListView(
+                            children: order.customer.target!.orders
+                                .map(
+                                  (_) => ListTile(
+                                    title: Text(
+                                        '${_.id}    ${_.customer.target?.name}   \$${_.price}'),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        );
+                      });
+                }),
+                DataCell(Text('\$${order.price}')),
+                DataCell(Icon(Icons.delete), onTap: () {
+                  widget.store.box<ShopOrder>().remove(order.id);
+                }),
+              ]);
+            }).toList()),
       ),
     );
   }
