@@ -4,6 +4,7 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:project_objectbox/compent/addmodelBottensheet.dart';
 import 'package:project_objectbox/entities.dart';
 import 'package:project_objectbox/objectbox.g.dart';
 import 'package:project_objectbox/order_date_tabel.dart';
@@ -50,6 +51,19 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              context: context,
+              builder: (context) {
+                return AddNoteBottomSheet();
+              });
+        },
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: Text('orders'),
         actions: [
